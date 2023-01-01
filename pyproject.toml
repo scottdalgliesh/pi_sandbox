@@ -1,0 +1,21 @@
+[tool.poetry]
+name = "pi-sandbox"
+version = "0.1.0"
+description = ""
+authors = ["Your Name <you@example.com>"]
+readme = "README.md"
+packages = [{include = "pi_sandbox"}]
+
+[tool.poetry.dependencies]
+python = "^3.11"
+gpiozero = "^1.6.2"
+
+
+[tool.poetry.group.dev.dependencies]
+black = "^22.12.0"
+pylint = "^2.15.9"
+mypy = "^0.991"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
