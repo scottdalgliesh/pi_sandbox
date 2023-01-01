@@ -1,3 +1,11 @@
+[tool.black]
+exclude = '/(\.eggs|\.git|\.hg|\.mypy_cache|\.nox|\.tox|\.venv|\.svn|_build|buck-out|build|dist|migrations)/'
+line-length = 98
+
+[tool.isort]
+profile = "black"
+src_paths = ["scripts"]
+
 [tool.poetry]
 name = "pi-sandbox"
 version = "0.1.0"
@@ -9,12 +17,14 @@ packages = [{include = "pi_sandbox"}]
 [tool.poetry.dependencies]
 python = "^3.11"
 gpiozero = "^1.6.2"
+rpi-gpio = "^0.7.1"
 
 
 [tool.poetry.group.dev.dependencies]
 black = "^22.12.0"
 pylint = "^2.15.9"
 mypy = "^0.991"
+isort = "^5.11.4"
 
 [build-system]
 requires = ["poetry-core"]
