@@ -15,8 +15,8 @@ def main() -> None:
         print("LED is on.")
         sleep(1)
         red.off()
-        sleep(1)
         print("LED is off.")
+        sleep(1)
 
 
 if __name__ == "__main__":
