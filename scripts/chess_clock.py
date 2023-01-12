@@ -13,7 +13,7 @@ yellow = LED(19)
 blue = LED(13)
 
 red_button = Button(10)
-yellow_button = Button(9)
+yellow_button = Button(9, hold_time=5)
 blue_button = Button(11)
 
 lcd = CharLCD("PCF8574", 0x27)
@@ -57,12 +57,19 @@ class Player:
 
     def get_time_remaining(self) -> str:
         """Get time remaining for player, return as string in format: "MM:SS"."""
+        # get remaining time
         if self.is_active:
             time_remaining = self.time_remaining - (datetime.now() - self.time_activated)
         else:
             time_remaining = self.time_remaining
-        minutes, seconds = divmod(time_remaining.seconds, 60)
-        return f"{minutes:02d}:{seconds:02d}"
+
+        # handle case of negative time remaining (overtime condition)
+        sign = "-" if time_remaining.total_seconds() < 0 else ""
+        time_remaining = abs(time_remaining)
+
+        # format result for display
+        minutes, seconds = divmod(int(time_remaining.total_seconds()), 60)
+        return f"{sign}{minutes:02d}:{seconds:02d}"
 
     def end_turn(self) -> None:
         """Ends turn. If already ended, does nothing."""
@@ -75,11 +82,9 @@ class Player:
 class ChessClock:
     """Raspberry Pi chess clock."""
 
-    is_started = False
     default_minutes = 10
 
     def __init__(self) -> None:
-        self.is_paused = True
         self.initiate_game()
 
     @property
@@ -99,6 +104,8 @@ class ChessClock:
         lcd.cursor_pos = (0, 0)
 
         # pre-game phase
+        self.is_started = False
+        self.is_paused = True
         self.player1 = Player(led=red)
         self.player2 = Player(led=blue)
         red_button.when_pressed = self.player1.adjust_time_remaining
@@ -113,6 +120,8 @@ class ChessClock:
         blue_button.when_pressed = self.blue_button
         yellow_button.when_pressed = self.yellow_button
         while True:
+            if yellow_button.is_held:
+                return self.initiate_game()
             self.print_time_remaining()
             time.sleep(0.1)
 
